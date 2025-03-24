@@ -96,14 +96,20 @@ There is multiple files used with the main file.
 ## Testing and Results
 
 ### Testing Procedure
-- Describe how the project was tested.
 - Debugger
-The debugger was used to check if bits in registers were being correctly set while the code was running. This was extremely useful for EXTI and
+The debugger was used to check if bits in registers were being correctly set while the code was running. Every time new code was added, a breakpoint would be set at that code and the debugger would be run until it got to that breakpoint where each register would then be inspected to make sure that they were being set and cleared as expected. 
 
 - Logic Analyzer
-A logic analyzer was used to check that the PWM signal coming from PA9 were being sent. This was helpful for debugging the
+A logic analyzer was used to check that the PWM signal coming from PA9 was being sent.
 ![PWM Signal Duty Cycle Changing](notechange.png)
 > Image showing testing of PWM signal from PA9 during a duty cycle update.
+
+![PWM Signal During Pausestate](pwmpausestate.png)
+>Image showing the PWM being tested if it stops during a pause state.
+
+It was also used to check that the signals required for SPI were being sent too 
+![Checking if 500ms delay affects the SPI communications](spidelay.png)
+> Image showing testing of SPI signal, checking if the 500ms delay is working inbetween refreshes
 
 - Printf using USART
 For debugging it was sometimes useful to use printf() to see what value a variable in the code used. This was used to fix a problem in the code where EXTI4 would permanently pause the entire system while EXTI4 was meant to only disable TIM1 and SysTick while the pause state was active. Using printf() for the variable milliseconds showed that SysTick was not incrementing the milliseconds which led to a circular loop as the function which EXTI4 relied on to debounce the button was delay_ms(). This function uses milliseconds to count towards the end of delay so this caused the infinite delay. This was then able to be fixed easily by adding a second tick counter variable and using an if statement to stop SysTick from updating the counters, rather than entirely disabling SysTick.
@@ -111,13 +117,14 @@ For debugging it was sometimes useful to use printf() to see what value a variab
       // Print milliseconds through serial for debugging SysTick (uncomment to use)
       printf("%ld \n",milliseconds);
   
-> This is the code used for printing the milliseconds
+> This is the code used for printing the milliseconds variable
+
+![Printf() being used to to show milliseconds variable value](printfdebug.png)
+> Image shows printf() printing the value of the variable milliseconds while program is running
 
 ### Results
-- Summarize the key outcomes and observations.
-![PWM Signal During Pausestate](pwmpausestate.png)
 
-Most of the aims of the project were met, however a MIDI communications using UART were not achieved due to time constraints. The logic analyzer shows that the 
+Most of the objectives of the project were met, however a MIDI communications using UART were not achieved due to time constraints. Excluding the MIDI communication protocol it can be said that the aim of the project was achieved to create an 8-step sequencer using a L432KC microcontroller.
 
 ## Video Demo of the Project
 This video shows a demonstration of all of the features of the project as of 22/03/2025
